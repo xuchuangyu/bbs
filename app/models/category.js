@@ -9,7 +9,7 @@ const {
 } = require('sequelize')
 
 class Category extends Model {
-    static async  createCategory(name, Article) {
+    static async  checkCategory(name, Article) {
         let datas = await Category.findOne({
             where: {
                 name,
@@ -23,7 +23,8 @@ class Category extends Model {
         if (!datas) {
             Category.create({ name, number: 1 })
         } else {
-            Category.update({ number: ArticleCount.count+1 }, {
+        
+            Category.update({ number: ArticleCount.count }, {
                 where: {
                     name,
                 }

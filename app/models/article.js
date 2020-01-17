@@ -10,7 +10,7 @@ const {
 } = require('sequelize')
 const { Category } = require('./category');
 class Article extends Model {
-    static createArticle(ctx, v) {
+    static async createArticle(ctx, v) {
         let article = {
             title: v.get('body.title'),
             author: v.get('body.author') || '',
@@ -19,16 +19,38 @@ class Article extends Model {
             volume: v.get('body.volume') || '',
             category: v.get('body.category') || '',
         };
-        console.log(article)
-        Article.create(article)
+        await Article.create(article)
         if (v.get('body.category')) {
-            Category.createCategory(v.get('body.category'), Article)
+            Category.checkCategory(v.get('body.category'), Article)
         }
-        ctx.body={
-            success:1,
-            msg:'操作成功'
-        }
+   
      //   success();
+    }
+    static async updateArticle(ctx, v){
+        let datas= await Article.findOne({
+            where:{
+                id:v.get('path.id')
+            }
+        })
+      
+        let article = {
+            title: v.get('body.title'),
+            author: v.get('body.author') || '',
+            introduction: v.get('body.introduction') || '',
+            content: v.get('body.content'),
+            volume: v.get('body.volume') || '',
+            category: v.get('body.category') || '',
+        };
+        await Article.update(article,{
+            where:{
+                id:v.get('path.id')
+            }
+        })
+        if(v.get('body.category')!=datas.category){
+            Category.checkCategory(datas.category, Article)
+        }
+        Category.checkCategory(v.get('body.category'), Article)
+     
     }
 }
 
@@ -87,6 +109,11 @@ Article.init({
     },
     //开心数量
     happyNum: {
+        type: Sequelize.INTEGER,
+        unique: true
+    },
+    //删除文章的状态
+    delStatus: {
         type: Sequelize.INTEGER,
         unique: true
     },

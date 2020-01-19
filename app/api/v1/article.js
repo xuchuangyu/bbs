@@ -21,7 +21,16 @@ router.post('/create',async (ctx,next)=>{
     }
 });
 router.get('/list',async (ctx,next)=>{
-    let datas = await Article.findAndCountAll();
+  //  let v=await new ArticleValidator().validate(ctx);
+    let query={};
+    for(let key in ctx.query){
+        if(ctx.query[key]!=''&&(key=='title'||key=='category')){
+            query[key]={[global.op.like]:'%' + ctx.query[key] + '%'}
+        }
+    }
+    let datas = await Article.findAndCountAll({
+        where:query
+     });
     if(datas.length==0){
         throw new global.errs.NotFound
     }

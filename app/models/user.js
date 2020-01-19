@@ -55,7 +55,6 @@ User.init({
     sequelize,
     tableName:'user',
 })
-User.sync({force: true})
 module.exports = {
     User 
 }

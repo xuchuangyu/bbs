@@ -172,6 +172,11 @@ class ArticleValidator extends LinValidator{
         ]
     }
 }
+class ArticleTitleValidator extends LinValidator{
+    constructor(){
+        super()
+    }
+}
 class PositiveIntegerValidator extends LinValidator {
     constructor() {
         super()

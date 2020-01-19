@@ -34,6 +34,7 @@ const sequelize = new Sequelize(dbName,user,password,{
         }
     }
 })
+global.op=Sequelize.Op
 sequelize.sync({
     force:false
 })

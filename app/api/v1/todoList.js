@@ -5,6 +5,9 @@ const {
 // const {} =require('@validators')
 const {success} = require('../../lib/helper')
 const {
+    Auth
+} = require('../../../middlewares/auth')
+const {
     TodoListValidator,
     DelIdValidator
 } =require('../../validators/validator')
@@ -42,16 +45,21 @@ router.put('/', async (ctx) => {
 })
 router.delete('/:id', async (ctx)=>{
     const v = await new DelIdValidator().validate(ctx)
-    let datas = await TodoList.findOne({
-        where:{
-            id:v.get('path.id')
-        }
-    })
+    // let datas = await TodoList.findOne({
+    //     where:{
+    //         id:v.get('path.id')
+    //     }
+    // })
 
-        await TodoList.update({del:1},{
+    //     await TodoList.update({del:1},{
+    //         where:{
+    //             id:v.get('path.id')
+    //         },
+    //     })
+        await TodoList.destroy({
             where:{
-                id:v.get('path.id')
-            },
+                id:v.get("path.id")
+            }
         })
         ctx.body={
             success:1,
@@ -60,11 +68,8 @@ router.delete('/:id', async (ctx)=>{
     
     // console.log(datas)
 })
-router.get('/',async (ctx,next)=>{
+router.get('/',new Auth().m,async (ctx,next)=>{
     let datas = await TodoList.findAll({
-        where:{
-            del:-1
-        },
         order:[
             ["id","DESC"]
         ]

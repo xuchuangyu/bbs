@@ -15,7 +15,7 @@ const Router = require('koa-router')
 const router = new Router({
     prefix: '/v1/todoList'
 })
-router.post('/', async (ctx) => {
+router.post('/',new Auth().m, async (ctx) => {
      const v = await new TodoListValidator().validate(ctx)
     const todoList = {
         title:v.get('body.title'),
@@ -27,7 +27,7 @@ router.post('/', async (ctx) => {
         msg:'操作成功'
     }
 })
-router.put('/', async (ctx) => {
+router.put('/',new Auth().m, async (ctx) => {
     const v = await new TodoListValidator().validate(ctx)
     const todoList = {
         title:v.get('body.title'),
@@ -43,7 +43,7 @@ router.put('/', async (ctx) => {
         msg:'操作成功'
     }
 })
-router.delete('/:id', async (ctx)=>{
+router.delete('/:id',new Auth().m, async (ctx)=>{
     const v = await new DelIdValidator().validate(ctx)
     // let datas = await TodoList.findOne({
     //     where:{

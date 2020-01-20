@@ -7,7 +7,8 @@ const {
 } = require('../../../middlewares/auth')
 const {User} = require('../../models/user')
 const {
-    ConnentValidator
+    ConnentValidator,
+    getCommentValidator
 } = require('../../validators/validator')
 const {
     Comment
@@ -29,8 +30,9 @@ router.post('/',new Auth().m, async (ctx) => {
     const comment = {
         content: v.get('body.content'),
         nickName:uDate.nickname,
+        articleId:v.get('body.articleId')|| 99999 ,
         pic:v.get('body.pic') || '',
-        pid:v.get('body.pid') || -1
+        children:JSON.stringify(v.get('body.children'))||'',
     }
     Comment.create(comment)
     ctx.body = {
@@ -39,5 +41,25 @@ router.post('/',new Auth().m, async (ctx) => {
     }
 })
 
+router.get('/',new Auth().m, async (ctx) => {
+    const v = await new getCommentValidator().validate(ctx)
+    let query={};
+    for(let key in ctx.query){
+        if(ctx.query[key]!=''&&(key=='articleId'||key=='read'||key=='recycle')){
+            query[key]=ctx.query[key]
+        }
+    }
+    let datas = await Comment.findAndCountAll({
+        where:query
+    }) 
+    if(datas.length==0){
+        throw new global.errs.NotFound
+    }
+    ctx.body = {
+        success:1,
+        msg:'操作成功',
+        datas
+    }
+})
 
 module.exports = router

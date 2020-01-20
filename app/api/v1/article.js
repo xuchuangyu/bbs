@@ -7,12 +7,16 @@ const {
    ArticleValidator,
    PositiveIntegerValidator
 } =require('../../validators/validator')
+const {
+    Auth
+} = require('../../../middlewares/auth')
+const { Category } = require('../../models/category');
 const Router = require('koa-router')
 const router = new Router({
     prefix: '/v1/article'
 })
 //创建文章
-router.post('/create',async (ctx,next)=>{
+router.post('/create',new Auth().m,async (ctx,next)=>{
     let v=await new ArticleValidator().validate(ctx);
     Article.createArticle(ctx,v)
     ctx.body={
@@ -20,7 +24,7 @@ router.post('/create',async (ctx,next)=>{
         msg:'操作成功'
     }
 });
-router.get('/list',async (ctx,next)=>{
+router.get('/list',new Auth().m,async (ctx,next)=>{
   //  let v=await new ArticleValidator().validate(ctx);
     let query={};
     for(let key in ctx.query){
@@ -40,12 +44,12 @@ router.get('/list',async (ctx,next)=>{
         datas
     }
 })
-router.put('/:id',async (ctx,next)=>{
+router.put('/:id',new Auth().m,async (ctx,next)=>{
     let v=await new ArticleValidator().validate(ctx);
      Article.updateArticle(ctx,v)
      success()
 })
-router.delete('/:id',async (ctx,next)=>{
+router.delete('/:id',new Auth().m,async (ctx,next)=>{
     const v = await new PositiveIntegerValidator().validate(ctx);
     let datas= await Article.findOne({
         where:{
@@ -63,13 +67,13 @@ router.delete('/:id',async (ctx,next)=>{
             id:v.get("path.id")
         }
     })
-
+    Category.checkCategory(datas.category, Article)
     ctx.body={
         success:1,
         msg:'操作成功'
     }
 })
-router.get('/:id',async (ctx,next)=>{
+router.get('/:id',new Auth().m,async (ctx,next)=>{
     const v = await new PositiveIntegerValidator().validate(ctx);
     let datas= await Article.findOne({
         where:{

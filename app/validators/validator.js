@@ -74,9 +74,14 @@ class ConnentValidator extends LinValidator{
                 min: 1,
             })
         ]
-        this.aId=[
-            new Rule('isLength','aId 不能为空',{
-                min:1
+    }
+}
+class getCommentValidator extends LinValidator{
+    constructor(){
+        super()
+        this.articleId=[
+            new Rule('isLength', 'articleId 不能为空', {
+                min: 1,
             })
         ]
     }
@@ -196,5 +201,6 @@ module.exports = {
     DelIdValidator,
     TodoListValidator,
     AboutUsValidator,
+    getCommentValidator,
     PositiveIntegerValidator
 }

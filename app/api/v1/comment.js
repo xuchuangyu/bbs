@@ -40,7 +40,21 @@ router.post('/',new Auth().m, async (ctx) => {
         msg:'评论成功'
     }
 })
-
+router.put('/:id',new Auth().m, async (ctx) => {
+    let query={};
+    for(let key in ctx.request.body){
+        if(ctx.request.body[key]!=''&&(key=='read'||key=='recycle')){
+            query[key]=ctx.request.body[key]
+        }
+    }
+    await Comment.update(query,{
+        where:{id:ctx.params.id}
+    })
+    ctx.body = {
+        success:1,
+        msg:'操作成功',
+    }
+})
 router.get('/',new Auth().m, async (ctx) => {
     const v = await new getCommentValidator().validate(ctx)
     let query={};
@@ -61,5 +75,25 @@ router.get('/',new Auth().m, async (ctx) => {
         datas
     }
 })
-
+router.get('/message',new Auth().m, async (ctx)=>{
+    // 未读
+    let unread = await Comment.findAll({
+        where:{articleId:99999,read:-1,recycle:-1}
+    }) 
+    //已读
+    let read = await Comment.findAll({
+        where:{articleId:99999,read:1,recycle:-1}
+    }) 
+    //垃圾箱
+    let recycle = await Comment.findAll({
+        where:{articleId:99999,recycle:1}
+    })
+    ctx.body = {
+        success:1,
+        msg:'操作成功',
+        unread,
+        read,
+        recycle,
+    }
+})
 module.exports = router

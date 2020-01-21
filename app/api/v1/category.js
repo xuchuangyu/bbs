@@ -2,6 +2,9 @@
 const {
     Category
 } = require('../../models/category')
+const {
+    Article
+} = require('../../models/article')
 // const {} =require('@validators')
 const {success} = require('../../lib/helper')
 const {
@@ -21,10 +24,15 @@ router.get('/',new Auth().m,async (ctx,next)=>{
             number: {[global.op.gt]:0}
         }
     });
+    let number=0;
+    for(let item of datas){
+        number+=parseInt(item.number)
+    }
     ctx.body = {
         success:1,
         msg:'操作成功',
-        datas
+        datas,
+        number
     }
 })
 module.exports = router

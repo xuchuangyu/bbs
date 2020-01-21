@@ -90,27 +90,27 @@ Article.init({
     //点赞数量
     goodNum: {
         type: Sequelize.INTEGER,
-        unique: true
+       defaultValue:0
     },
     //无语数量
     speechlessNum: {
         type: Sequelize.INTEGER,
-        unique: true
+        defaultValue:0
     },
     //草泥马数量
     cnmNum: {
         type: Sequelize.INTEGER,
-        unique: true
+        defaultValue:0
     },
     //流泪数量
     tearsNum: {
         type: Sequelize.INTEGER,
-        unique: true
+        defaultValue:0
     },
     //开心数量
     happyNum: {
         type: Sequelize.INTEGER,
-        unique: true
+        defaultValue:0
     },
     //删除文章的状态
     delStatus: {

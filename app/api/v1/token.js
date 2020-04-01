@@ -1,5 +1,11 @@
 var moment = require('moment');
 const Router = require('koa-router')
+const axiox= require("axios")
+const {
+    APP_ID,
+    API_KEY,
+    SECRET_KEY,
+  } = require('../../config/config').baidu;
 const {
     TokenValidator
 } = require(`../../validators/validator`)
@@ -26,7 +32,9 @@ router.post('/', async (ctx) => {
             throw new global.errs.ParameterException('没有相应的处理函数')
     }
     //  ctx.response.set('my-token', token);
-
+    axiox.post(`https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=${API_KEY}&client_secret=${SECRET_KEY}`).then((datas)=>{
+        ctx.cookies.set('access_token',datas.data.access_token,{ maxAge: 30 * 60 * 1000 })// cookie有效时})
+    })
     ctx.cookies.set(
         'token',//name
         token,//value

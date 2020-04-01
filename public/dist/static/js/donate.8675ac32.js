@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["donate"],{"8c81":function(e,n,t){"use strict";t.r(n);var a=function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("div")},c=[],o={},r=o,s=t("5511"),u=Object(s["a"])(r,a,c,!1,null,"98a87e4a",null);n["default"]=u.exports}}]);

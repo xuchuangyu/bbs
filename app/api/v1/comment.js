@@ -19,10 +19,11 @@ const router = new Router({
 
 //注册 新增数据 put get delete
 // 静态
-
 router.post('/',new Auth().m, async (ctx) => {
    const v = await new ConnentValidator().validate(ctx)
    let uDate=await User.findOne({
+       
+     
         where:{
             id:ctx.auth.uid
         }
@@ -73,6 +74,21 @@ router.get('/',new Auth().m, async (ctx) => {
         success:1,
         msg:'操作成功',
         datas
+    }
+})
+router.get('/list',new Auth().m,async (ctx)=>{
+    let datas = await Comment.findAndCountAll({
+        attributes: ['content', 'nickName','created_at'],
+        where:{
+            articleId:{
+                [global.op.ne]:99999
+            }
+        }
+    }) 
+    ctx.body = {
+        success:1,
+        msg:'操作成功',
+       datas
     }
 })
 router.get('/message',new Auth().m, async (ctx)=>{

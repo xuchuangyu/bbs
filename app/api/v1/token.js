@@ -1,11 +1,11 @@
 var moment = require('moment');
 const Router = require('koa-router')
-const axiox= require("axios")
+const axiox = require("axios")
 const {
     APP_ID,
     API_KEY,
     SECRET_KEY,
-  } = require('../../config/config').baidu;
+} = require('../../config/config').baidu;
 const {
     TokenValidator
 } = require(`../../validators/validator`)
@@ -31,10 +31,10 @@ router.post('/', async (ctx) => {
         default:
             throw new global.errs.ParameterException('没有相应的处理函数')
     }
-    //  ctx.response.set('my-token', token);
-    axiox.post(`https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=${API_KEY}&client_secret=${SECRET_KEY}`).then((datas)=>{
-        ctx.cookies.set('access_token',datas.data.access_token,{ maxAge: 30 * 60 * 1000 })// cookie有效时})
+    axiox.post(`https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=${API_KEY}&client_secret=${SECRET_KEY}`).then((datas) => {
+        ctx.cookies.set('access_token', datas.data.access_token, { maxAge: 30 * 60 * 1000 })// cookie有效时})
     })
+    ctx.auth = token;
     ctx.cookies.set(
         'token',//name
         token,//value
@@ -48,10 +48,10 @@ router.post('/', async (ctx) => {
         }
     })
     User.update({
-        address:v.get(`body.address`),
-        loginTime:moment(new Date().getTime()).format('YYYY-MM-DD HH:mm:ss'),
-    },{
-        where:{
+        address: v.get(`body.address`),
+        loginTime: moment(new Date().getTime()).format('YYYY-MM-DD HH:mm:ss'),
+    }, {
+        where: {
             email: v.get(`body.account`)
         }
     })
@@ -59,15 +59,15 @@ router.post('/', async (ctx) => {
     // console.log(datas.loginTime)
     //ctx.session.token=token
     ctx.body = {
-        success:1,
-        msg:'操作成功',
+        success: 1,
+        msg: '操作成功',
         token,
         datas
     }
 })
 async function emailLogin(account, secret) {
     const user = await User.verifyEmailPassword(account, secret)
-    return token = generateToken(user.id,account=='admin'?Auth.ADMIN:Auth.USER)
+    return token = generateToken(user.id, account == 'admin' ? Auth.ADMIN : Auth.USER)
 }
 
 module.exports = router 

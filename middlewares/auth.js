@@ -41,10 +41,10 @@ class Auth {
                 }
                 throw new global.errs.Forbbiden(errMsg)
             }
-            
+
             ctx.auth = {
-                uid:decode.uid,
-                scope:decode.scope
+                uid: decode.uid,
+                scope: decode.scope
             }
             await next()
         }

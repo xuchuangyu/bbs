@@ -10,24 +10,26 @@ const static = require('koa-static')
 const catchError = require('./middlewares/exception')
 const session = require('koa-session');
 
+const nodemailer = require('nodemailer');
+
 const app = new Koa()
 onerror(app)
 const CONFIG = {
   key: 'koa:sess',
   maxAge: 86400000, //失效时间，默认是一天。
-      overwrite: true,
-      httpOnly: true, //表示是否可以通过javascript来修改，设成true会更加安全
-      signed: true, //这个涉及到cookie的安全性
-      rolling: false, //是涉及到cookie有效期的更新策略
-      renew: false,  //是涉及到cookie有效期的更新策略
-  };
+  overwrite: true,
+  httpOnly: true, //表示是否可以通过javascript来修改，设成true会更加安全
+  signed: true, //这个涉及到cookie的安全性
+  rolling: false, //是涉及到cookie有效期的更新策略
+  renew: false,  //是涉及到cookie有效期的更新策略
+};
 app.use(session(CONFIG, app));
 app.use(catchError)
 app.use(bodyparser({
-  enableTypes:['json', 'form', 'text']
+  enableTypes: ['json', 'form', 'text']
 }))
 app.use(json())
- app.use(static(path.join(__dirname,'./public')))
+app.use(static(path.join(__dirname, './public')))
 
 InitManager.initCore(app)
 

@@ -7,7 +7,6 @@ class InitManager {
         InitManager.app = app;
         InitManager.initLoadRouters();
         InitManager.loadHttpException();
-        InitManager.initSocket();
         InitManager.loadConfig()
     }
 
@@ -32,22 +31,6 @@ class InitManager {
         const errors = require('./http-exception')
         global.errs = errors
     }
-    static initSocket(server) {
-        var io = require('socket.io')(server);
-        //     var onlieCount = 0;
-        io.on('connection', function (socket) {
-            //  onlieCount++;
-            //   console.log('有一个人进来了,' + '现在有' + onlieCount + '人在线！');
-            console.log('socket 初始化')
-            socket.on('login', function (obj) {
-                // console.log(obj.username);
-                // 发送数据
-                socket.emit('relogin', {
-                    msg: `你好${obj.username}`,
-                    code: 200
-                });
-            });
-        });
-    }
+
 }
 module.exports = InitManager

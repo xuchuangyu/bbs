@@ -2,7 +2,7 @@
 
 const Router = require('koa-router')
 
-const {success} = require('../../lib/helper')
+const { success } = require('../../lib/helper')
 
 
 const {
@@ -33,9 +33,10 @@ router.post('/register', async (ctx) => {
         password: v.get('body.password2'),
         nickname: v.get('body.nickname'),
     }
-    await User.create(user)
+
+    let data = await User.create(user)
+    // generateToken(id,8)
+    // let token = await emailLogin(v.get(`body.email`), v.get(`body.password2`))
     success()
 })
-
-
 module.exports = router

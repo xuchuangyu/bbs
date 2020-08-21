@@ -34,7 +34,6 @@ router.post('/', async (ctx) => {
     axiox.post(`https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=${API_KEY}&client_secret=${SECRET_KEY}`).then((datas) => {
         ctx.cookies.set('access_token', datas.data.access_token, { maxAge: 30 * 60 * 1000 })// cookie有效时})
     })
-    ctx.auth = token;
     ctx.cookies.set(
         'token',//name
         token,//value
@@ -55,9 +54,6 @@ router.post('/', async (ctx) => {
             email: v.get(`body.account`)
         }
     })
-    // console.log(moment(new Date().getTime()).format('YYYY-MM-DD HH:mm:ss'))
-    // console.log(datas.loginTime)
-    //ctx.session.token=token
     ctx.body = {
         success: 1,
         msg: '操作成功',

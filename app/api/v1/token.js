@@ -20,7 +20,12 @@ const { Auth } = require('../../../middlewares/auth')
 const router = new Router({
     prefix: '/v1/token'
 })
-
+/**
+ * api /v1/token
+ * type
+ * account
+ * secret
+ * */
 router.post('/', async (ctx) => {
     const v = await new TokenValidator().validate(ctx)
     let token;
@@ -70,4 +75,4 @@ async function emailLogin(account, secret) {
     return token = generateToken(user.id,account=='admin'?Auth.ADMIN:Auth.USER)
 }
 
-module.exports = router 
+module.exports = router

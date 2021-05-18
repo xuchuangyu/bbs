@@ -3,11 +3,11 @@ module.exports = {
     // prod
     environment:'dev',
     database:{
-        dbName:'xuchuangyu',
-        host:'47.100.183.225',
+        dbName:'bbs',
+        host:'127.0.0.1',
         port:3306,
         user:'root',
-        password:'123qweASD!@#',
+        password:'123456',
     },
     security:{
         secretKey:"abcdefg",

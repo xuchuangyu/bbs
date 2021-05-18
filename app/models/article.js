@@ -23,7 +23,7 @@ class Article extends Model {
         if (v.get('body.category')) {
             Category.checkCategory(v.get('body.category'), Article)
         }
-   
+
      //   success();
     }
     static async updateArticle(ctx, v){
@@ -32,7 +32,7 @@ class Article extends Model {
                 id:v.get('path.id')
             }
         })
-      
+
         let article = {
             title: v.get('body.title'),
             author: v.get('body.author') || '',
@@ -50,7 +50,6 @@ class Article extends Model {
             Category.checkCategory(datas.category, Article)
         }
         Category.checkCategory(v.get('body.category'), Article)
-     
     }
 }
 

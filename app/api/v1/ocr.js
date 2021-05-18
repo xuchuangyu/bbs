@@ -2,7 +2,7 @@
 
 const Router = require('koa-router')
 const multer = require('koa-multer')
-const path = require("path") 
+const path = require("path")
 const fs = require("fs")
 const {
   APP_ID,
@@ -26,7 +26,7 @@ const fileFilter = function (req, file, cb) {
   } else {
       cb(null, false)
   }
-}  
+}
 var storage = multer.diskStorage({
   //文件保存路径
   destination: function (req, file, cb) {
@@ -49,6 +49,6 @@ router.post('/generalBasic',  upload.single('file'), async (ctx, next) => {
       success:1,
       msg:'操作成功',
       datas,
-  }
+     }
 })
 module.exports = router

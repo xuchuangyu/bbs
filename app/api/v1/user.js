@@ -17,7 +17,15 @@ const router = new Router({
 
 //注册 新增数据 put get delete
 // 静态
-
+/***
+ *
+ * 注册用户
+ * email 邮箱
+ * password1 密码1
+ * password2 密码2
+ * nickname 姓名
+ *
+ * */
 router.post('/register', async (ctx) => {
     const v = await new RegisterValidator().validate(ctx)
     // email password

@@ -2,7 +2,7 @@ var moment = require('moment');
 const {
     sequelize
 } = require('../../core/db')
- 
+
 const bcrypt = require('bcryptjs')
 const {
     Sequelize,
@@ -20,6 +20,7 @@ class User extends Model {
           throw new global.errs.AuthFailed('账户不存在')
       }
       const correct = bcrypt.compareSync(plainPassword,user.password)
+
       if(!correct) {
         throw new global.errs.AuthFailed('密码不正确')
       }
@@ -56,5 +57,5 @@ User.init({
     tableName:'user',
 })
 module.exports = {
-    User 
+    User
 }

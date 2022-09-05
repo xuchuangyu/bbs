@@ -23,7 +23,6 @@ class Category extends Model {
         if (!datas) {
             Category.create({ name, number: 1 })
         } else {
-        
             Category.update({ number: ArticleCount.count }, {
                 where: {
                     name,

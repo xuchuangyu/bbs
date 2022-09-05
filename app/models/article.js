@@ -23,8 +23,6 @@ class Article extends Model {
         if (v.get('body.category')) {
             Category.checkCategory(v.get('body.category'), Article)
         }
-
-     //   success();
     }
     static async updateArticle(ctx, v){
         let datas= await Article.findOne({
@@ -46,10 +44,7 @@ class Article extends Model {
                 id:v.get('path.id')
             }
         })
-        if(v.get('body.category')!=datas.category){
-            Category.checkCategory(datas.category, Article)
-        }
-        Category.checkCategory(v.get('body.category'), Article)
+        Category.checkCategory(datas.category||v.get('body.category'), Article)
     }
 }
 

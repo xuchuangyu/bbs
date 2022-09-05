@@ -25,8 +25,8 @@ router.post('/create',new Auth().m,async (ctx,next)=>{
     }
 });
 router.get('/list',new Auth().m,async (ctx,next)=>{
-  //  let v=await new ArticleValidator().validate(ctx);
     let query={};
+    //模糊搜索
     for(let key in ctx.query){
         if(ctx.query[key]!=''&&(key=='title'||key=='category')){
             query[key]={[global.op.like]:'%' + ctx.query[key] + '%'}
@@ -35,9 +35,6 @@ router.get('/list',new Auth().m,async (ctx,next)=>{
     let datas = await Article.findAndCountAll({
         where:query
      });
-    if(datas.length==0){
-        throw new global.errs.NotFound
-    }
     ctx.body = {
         success:1,
         msg:'操作成功',

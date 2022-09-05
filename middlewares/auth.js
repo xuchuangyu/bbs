@@ -10,38 +10,24 @@ class Auth {
     }
     get m() {
         return async (ctx, next) => {
-            // const userToken = basicAuth(ctx.req)
-            // let errMsg = 'token不合法'
-            // if(!userToken || !userToken.name){
-            //     throw new global.errs.Forbbiden(errMsg)
-            // }
-            // try{
-            //     var decode= jwt.verify(userToken.name,global.config.seurity.secretKey)
-            // }catch (error){
-            //     if(error.name == 'TokenExpiredError'){
-            //         errMsg = 'token已过期'
-            //     }
-            //     throw new global.errs.Forbbiden(errMsg)
-            // }
-            // if(decode.scope<this.level){
-            //     errMsg = '权限不足'
-            //     throw new global.errs.Forbbiden(errMsg)
-            // }
-            const token = ctx.cookies.get('token');
-            let errMsg = 'token不合法';
-            if (!token) {
+
+            const userToken = basicAuth(ctx.req)
+            let errMsg = 'token不合法'
+            if(!userToken){
                 throw new global.errs.Forbbiden(errMsg)
             }
-            try {
-                var decode = jwt.verify(token, global.config.security.secretKey)
-            } catch (error) {
-
-                if (error.name == 'TokenExpiredError') {
+            try{
+                var decode= jwt.verify(userToken.name,global.config.security.secretKey)
+            }catch (error){
+                if(error.name == 'TokenExpiredError'){
                     errMsg = 'token已过期'
                 }
                 throw new global.errs.Forbbiden(errMsg)
             }
-            
+            if(decode.scope<this.level){
+                errMsg = '权限不足'
+                throw new global.errs.Forbbiden(errMsg)
+            }
             ctx.auth = {
                 uid:decode.uid,
                 scope:decode.scope
@@ -58,6 +44,7 @@ class Auth {
         }
     }
 }
+
 module.exports = {
     Auth
 }

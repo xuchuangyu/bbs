@@ -6,9 +6,10 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const path = require('path')
 const InitManager = require('./core/init')
-const static = require('koa-static')
+const koaStatic = require('koa-static')
 const catchError = require('./middlewares/exception')
 const session = require('koa-session');
+const cors = require('koa-cors');
 
 const app = new Koa()
 onerror(app)
@@ -21,13 +22,14 @@ const CONFIG = {
       rolling: false, //是涉及到cookie有效期的更新策略
       renew: false,  //是涉及到cookie有效期的更新策略
   };
+app.use(cors)
 app.use(session(CONFIG, app));
 app.use(catchError)
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
 app.use(json())
- app.use(static(path.join(__dirname,'./public')))
+app.use(koaStatic(path.join(__dirname,'./public')))
 
 InitManager.initCore(app)
 

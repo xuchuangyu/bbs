@@ -195,6 +195,7 @@ class PositiveIntegerValidator extends LinValidator {
 module.exports = {
     NavValidator,
     ArticleValidator,
+    ArticleTitleValidator,
     RegisterValidator,
     TokenValidator,
     ConnentValidator,

@@ -38,15 +38,15 @@ router.post('/', async (ctx) => {
     }
     //  ctx.response.set('my-token', token);
     axiox.post(`https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=${API_KEY}&client_secret=${SECRET_KEY}`).then((datas)=>{
-        ctx.cookies.set('access_token',datas.data.access_token,{ maxAge: 30 * 60 * 1000 })// cookie有效时})
+        // ctx.cookies.set('access_token',datas.data.access_token,{ maxAge: 30 * 60 * 1000 })// cookie有效时})
     })
-    ctx.cookies.set(
-        'token',//name
-        token,//value
-        {
-            maxAge: 30 * 60 * 1000, // cookie有效时
-        }
-    )
+    // ctx.cookies.set(
+    //     'token',//name
+    //     token,//value
+    //     {
+    //         maxAge: 30 * 60 * 1000, // cookie有效时
+    //     }
+    // )
     const datas = await User.findOne({
         where: {
             email: v.get(`body.account`)

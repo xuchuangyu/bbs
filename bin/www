@@ -12,7 +12,7 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3009');
+var port = normalizePort(process.env.PORT || '3010');
 // app.set('port', port);
 
 /**
@@ -25,13 +25,13 @@ var onlieCount=0;
 io.on('connection', function (socket) {
   onlieCount++;
   console.log('有一个人进来了,'+'现在有'+onlieCount+'人在线！');
-  socket.on('login', function (obj) {                
+  socket.on('login', function (obj) {
       console.log(obj.username);
       // 发送数据
       socket.emit('relogin', {
         msg: `你好${obj.username}`,
         code: 200
-      });  
+      });
   });
 });
 /**

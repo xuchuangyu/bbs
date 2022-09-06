@@ -22,7 +22,7 @@ const CONFIG = {
       rolling: false, //是涉及到cookie有效期的更新策略
       renew: false,  //是涉及到cookie有效期的更新策略
   };
-app.use(cors)
+app.use(cors())
 app.use(session(CONFIG, app));
 app.use(catchError)
 app.use(bodyparser({

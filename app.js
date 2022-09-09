@@ -22,7 +22,22 @@ const CONFIG = {
       rolling: false, //是涉及到cookie有效期的更新策略
       renew: false,  //是涉及到cookie有效期的更新策略
   };
-app.use(cors())
+app.use(cors({
+    origin: function (ctx) {
+        console.log(ctx.url)
+        if (ctx.url === '/test') {
+            return "*"; // 允许来自所有域名请求
+        }
+        return '*'; // 这样就能只允许 http://localhost:8080 这个域名的请求了
+    },
+    exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+    maxAge: 5,
+    credentials: true,
+    allowMethods: ['GET', 'POST', 'DELETE'],
+    allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+}))
+//加密的密钥，服务器通过加密的cookie获取session
+app.keys = ['secret'];
 app.use(session(CONFIG, app));
 app.use(catchError)
 app.use(bodyparser({

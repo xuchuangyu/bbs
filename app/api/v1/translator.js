@@ -17,11 +17,9 @@ const bdTranslate = new MysKeyTranslate({
     secret: "FoU3LLrM8oL7iBJpu1rG", // 你的密钥
 });
 
-
-
 const Router = require('koa-router')
 const router = new Router({
-    prefix: '/v1/translator'
+    prefix: '/api/v1/translator'
 })
 /***
  * 翻译功能

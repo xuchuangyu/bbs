@@ -9,13 +9,13 @@ const {
 } =require('../../validators/validator')
 const Router = require('koa-router')
 const router = new Router({
-    prefix: '/v1/nav'
+    prefix: '/api/v1/nav'
 })
 router.post('/create', async (ctx) => {
     const v = await new NavValidator().validate(ctx)
     const nav = {
         name:v.get('body.name'),
-        url: v.get('body.url') 
+        url: v.get('body.url')
     }
     await Nav.create(nav)
     success()

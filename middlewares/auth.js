@@ -4,13 +4,12 @@ const jwt = require('jsonwebtoken')
 class Auth {
     constructor(level) {
         this.level = level || 1
-        Auth.USER = 8
-        Auth.ADMIN = 16
-        Auth.SUPER_ADMIN = 32
+        Auth.USER = 8;// 普通用户
+        Auth.ADMIN = 16; // 管理员
+        Auth.SUPER_ADMIN = 32  // 超级管理员
     }
     get m() {
         return async (ctx, next) => {
-
             const userToken = basicAuth(ctx.req)
             let errMsg = 'token不合法'
             if(!userToken){

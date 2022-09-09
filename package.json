@@ -39,6 +39,7 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "sequelize": "^5.21.2",
+    "silly-datetime": "^0.1.2",
     "socket.io": "^2.3.0",
     "svg-captcha": "^1.4.0"
   },

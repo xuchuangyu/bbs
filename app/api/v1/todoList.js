@@ -13,13 +13,13 @@ const {
 } =require('../../validators/validator')
 const Router = require('koa-router')
 const router = new Router({
-    prefix: '/v1/todoList'
+    prefix: '/api/v1/todoList'
 })
 router.post('/',new Auth().m, async (ctx) => {
      const v = await new TodoListValidator().validate(ctx)
     const todoList = {
         title:v.get('body.title'),
-        status: v.get('body.status')||0 
+        status: v.get('body.status')||0
     }
     await TodoList.create(todoList)
     ctx.body={
@@ -31,7 +31,7 @@ router.put('/',new Auth().m, async (ctx) => {
     const v = await new TodoListValidator().validate(ctx)
     const todoList = {
         title:v.get('body.title'),
-        status: v.get('body.status')?1:0 
+        status: v.get('body.status')?1:0
     }
     await TodoList.update(todoList,{
         where:{
@@ -65,7 +65,7 @@ router.delete('/:id',new Auth().m, async (ctx)=>{
             success:1,
             msg:'操作成功'
         }
-    
+
     // console.log(datas)
 })
 router.get('/',new Auth().m,async (ctx,next)=>{

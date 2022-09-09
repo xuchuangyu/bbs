@@ -13,7 +13,7 @@ const {
 const { Category } = require('../../models/category');
 const Router = require('koa-router')
 const router = new Router({
-    prefix: '/v1/article'
+    prefix: '/api/v1/article'
 })
 //创建文章
 router.post('/create',new Auth().m,async (ctx,next)=>{

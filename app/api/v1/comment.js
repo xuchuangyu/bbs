@@ -14,7 +14,7 @@ const {
     Comment
 } = require('../../models/comment')
 const router = new Router({
-    prefix: '/v1/comment'
+    prefix: '/api/v1/comment'
 })
 
 //注册 新增数据 put get delete
@@ -22,8 +22,8 @@ const router = new Router({
 router.post('/',new Auth().m, async (ctx) => {
    const v = await new ConnentValidator().validate(ctx)
    let uDate=await User.findOne({
-       
-     
+
+
         where:{
             id:ctx.auth.uid
         }
@@ -66,7 +66,7 @@ router.get('/',new Auth().m, async (ctx) => {
     }
     let datas = await Comment.findAndCountAll({
         where:query
-    }) 
+    })
     if(datas.length==0){
         throw new global.errs.NotFound
     }
@@ -84,7 +84,7 @@ router.get('/list',new Auth().m,async (ctx)=>{
                 [global.op.ne]:99999
             }
         }
-    }) 
+    })
     ctx.body = {
         success:1,
         msg:'操作成功',
@@ -95,11 +95,11 @@ router.get('/message',new Auth().m, async (ctx)=>{
     // 未读
     let unread = await Comment.findAll({
         where:{articleId:99999,read:-1,recycle:-1}
-    }) 
+    })
     //已读
     let read = await Comment.findAll({
         where:{articleId:99999,read:1,recycle:-1}
-    }) 
+    })
     //垃圾箱
     let recycle = await Comment.findAll({
         where:{articleId:99999,recycle:1}

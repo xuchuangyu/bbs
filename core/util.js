@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const sd = require('silly-datetime');
 /***
  *
  */
@@ -50,7 +51,12 @@ const generateToken = function (uid, scope) {
     })
     return token
 }
+const getCurDate=function (format = 'YYYYMMDD') {
+    // 默认返回格式：20200529
+    return sd.format(new Date(),format);
+}
 module.exports = {
+    getCurDate,
     findMembers,
     generateToken,
 }

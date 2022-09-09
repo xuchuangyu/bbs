@@ -8,7 +8,7 @@ const {
 } =require('../../validators/validator')
 const Router = require('koa-router')
 const router = new Router({
-    prefix: '/v1/aboutUs'
+    prefix: '/api/v1/aboutUs'
 })
 router.post('/create', async (ctx) => {
     let datas = await Nav.findAll();

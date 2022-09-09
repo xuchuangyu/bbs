@@ -3,16 +3,18 @@
 const Router = require('koa-router')
 
 const {success} = require('../../lib/helper')
-
+const {getCurDate} = require('../../../core/util')
 
 const {
+    MobileRegisterValidator,
     RegisterValidator
-} = require('../../validators/validator')
+} = require('../../validators/user')
 const {
     User
 } = require('../../models/user')
+const {MobilePhoneModel} = require('../../models/MobilePhoneModel')
 const router = new Router({
-    prefix: '/v1/user'
+    prefix: '/api/v1/user'
 })
 
 //注册 新增数据 put get delete
@@ -44,6 +46,44 @@ router.post('/register', async (ctx) => {
     await User.create(user)
     success()
 })
+/**
+ * 手机号码注册
+ * mobile 手机号码
+ * password 密码
+ * account 用户名
+ * smsCode 验证码
+ * repeatPassword 确认密码
+ * */
+router.post('/mobileRegister',async(ctx)=>{
+    // console.log(ctx)
+    const v = await new MobileRegisterValidator().validate(ctx);
+    let { smsCode }=ctx.request.body;
+    if(smsCode!=ctx.session.smsCode){
+        throw new Error('短信验证码不正确')
+    }
+    const user = {
+        mobile: v.get('body.mobile'),
+        password: v.get('body.password'),
+        account: v.get('body.account'),
+    }
+    await User.create(user)
+    success()
+})
 
-
+router.post('/sendSMSCode',async (ctx)=>{
+    let { telnumber }=ctx.request.body;
+    const clientIp=ctx.req.headers['x-forwarded-for'] || // 判断是否有反向代理IP
+    ctx.req.connection.remoteAddress || // 判断 connection 的远程 IP
+    ctx.req.connection.socket.remoteAddress || '';
+    const curDate = getCurDate(); // 当前时间
+    let args = {mobilePhone:telnumber,clientIp,curDate };
+    try{
+        let smsCodeData  =await MobilePhoneModel.dispatchSMSCode(args);
+            // 将验证码保存入 session 中
+            (smsCodeData.code === 200) && (ctx.session.smsCode = smsCodeData.smsCode);
+        ctx.body = smsCodeData;
+    }catch (error){
+        console.log(error)
+    }
+})
 module.exports = router

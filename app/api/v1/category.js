@@ -16,7 +16,7 @@ const {
 
 const Router = require('koa-router')
 const router = new Router({
-    prefix: '/v1/category'
+    prefix: '/api/v1/category'
 })
 router.get('/',new Auth().m,async (ctx,next)=>{
     let datas = await Category.findAll({

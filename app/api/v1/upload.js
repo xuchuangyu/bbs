@@ -3,7 +3,7 @@
 const Router = require('koa-router')
 const multer = require('koa-multer')
 const router = new Router({
-    prefix: '/v1'
+    prefix: '/api/v1'
 })
 //文件上传
 //配置
@@ -36,6 +36,6 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
         url: 'http://localhost:3000/uploads/' + ctx.req.file.filename,//返回文件名
         thumb:'http://localhost:3000/uploads/' + ctx.req.file.filename,//返回文件名
         tag: 'flower'
-    }] 
+    }]
 })
 module.exports = router

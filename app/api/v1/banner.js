@@ -5,7 +5,7 @@ const {
 } = require('../../../middlewares/auth')
 const Router = require('koa-router')
 const router = new Router({
-    prefix: '/v1/banner'
+    prefix: '/api/v1/banner'
 })
 router.get('/list',new Auth().m,async (ctx,next)=>{
     let query={};

@@ -84,7 +84,7 @@ class LinValidator {
             }
         }
         if (errorMsgs.length != 0) {
-            throw new ParameterException(errorMsgs)
+            throw new ParameterException(errorMsgs[0])
         }
         ctx.v = this
         return this

@@ -6,7 +6,7 @@ const catchError = async (ctx,next)=>{
     }catch(error){
         // 开发环境
         // 生产环境
-        // 开发环境 不是HttpException 
+        // 开发环境 不是HttpException
         const isHttpException =error instanceof HttpException
         const isDev = global.config.environment === 'dev'
         if(isDev && !isHttpException){
@@ -15,14 +15,14 @@ const catchError = async (ctx,next)=>{
         if(isHttpException){
             ctx.body = {
                 msg : error.msg,
-                error_code : error.errorCode,
+                code : error.errorCode,
                 request : `${ctx.method} ${ctx.path}`
             }
             ctx.status = error.code
         } else {
             ctx.body = {
                 msg : 'we made a mistake O(∩_∩)O~~',
-                error_code:999,
+                code:999,
                 request : `${ctx.method} ${ctx.path}`
             }
             ctx.status = 500

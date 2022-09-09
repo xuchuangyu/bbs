@@ -10,9 +10,9 @@ class HttpException extends Error{
 class Success extends HttpException {
     constructor(msg,errorCode){
         super()
-        this.msg = 201
         this.msg = msg || 'ok'
         this.errorCode = errorCode || 0
+        this.code=200;
     }
 }
 

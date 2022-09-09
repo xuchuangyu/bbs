@@ -16,7 +16,7 @@ var client = new AipOcrClient(APP_ID, API_KEY, SECRET_KEY);
 //     User
 // } = require('../../models/user')
 const router = new Router({
-    prefix: '/v1/ocr'
+    prefix: '/api/v1/ocr'
 })
 const fileFilter = function (req, file, cb) {
   var typeArray = file.mimetype.split('/');

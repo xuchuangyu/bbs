@@ -11,7 +11,7 @@ class Success extends HttpException {
     constructor(msg,errorCode){
         super()
         this.msg = msg || 'ok'
-        this.errorCode = errorCode || 0
+        this.errorCode = errorCode || 200
         this.code=200;
     }
 }

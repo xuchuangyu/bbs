@@ -23,42 +23,50 @@ const router = new Router({
 })
 /***
  * 翻译功能
- * translator
+ * translator 翻譯内容
+ * from 从翻译语言
+ * to 翻译成语言
  * */
 router.post('/', async (ctx) => {
-    const translatorObject=JSON.parse(ctx.request.rawBody).translator;
+    let {translator,from,to}=JSON.parse(ctx.request.rawBody);
     // let resultStr = await translator.translate(translatorObject[key])
-    // translatorObject[key]=JSON.parse(resultStr).translation[0]
-    let arr=[[]]
-    let keyArr=[[]]
-    let i=0,j=0;
-    // 百度云翻译
-    for(let key in translatorObject){
+    // translatorObject[key]=JSON.parse(resultStr).translation[0]；
+    if(typeof translator=='object'&&!Array.isArray(translator) ){
+        // 对象处理
+        let arr=[[]]
+        let keyArr=[[]]
+        let i=0,j=0;
+        // 百度云翻译
+        for(let key in translator){
 
-        arr[j].push(translatorObject[key])
-        keyArr[j].push(key)
-        i++;
-        if(i==50){
-            i=0;
-            j++;
-            arr[j]=[];
-            keyArr[j]=[];
+            arr[j].push(translator[key])
+            keyArr[j].push(key)
+            i++;
+            if(i==50){
+                i=0;
+                j++;
+                arr[j]=[];
+                keyArr[j]=[];
+            }
         }
-    }
-    let resultStr=[];
-    for(let item of arr){
-         resultStr.push(await bdTranslate(item, { from: "zh", to: 'pt' }));
-    }
-    for(let i=0;i<arr.length;i++){
-        for(let j=0;j<arr[i].length;j++){
-            translatorObject[keyArr[i][j]]=resultStr[i][j].dst
+        let resultStr=[];
+        for(let item of arr){
+            resultStr.push(await bdTranslate(item, { from:from || "zh", to: to ||'pt' }));
         }
+        for(let i=0;i<arr.length;i++){
+            for(let j=0;j<arr[i].length;j++){
+                translator[keyArr[i][j]]=resultStr[i][j].dst
+            }
+        }
+    }else{
+        // 数组处理
+        translator = await bdTranslate(translator, { from:from || "zh", to: to||'pt' })
     }
+
     ctx.body = {
         code:200,
         msg:'操作成功',
-        data:translatorObject,
-        translatorObject:JSON.parse(ctx.request.rawBody).translator
+        data:translator,
     }
 })
 // async function translateString(str) {

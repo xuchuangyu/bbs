@@ -133,7 +133,7 @@ function MysKeyTranslate(config) {
         let result = "";
         if (typeof value === "string") {
             const res = await this.requestApi(value, parames);
-            result = res.trans_result[0]["dst"];
+            result = res[0]["dst"];
         }
         if (
             Array.isArray(value) ||
@@ -141,6 +141,7 @@ function MysKeyTranslate(config) {
         ) {
             result = await this._createObjValue(value, parames);
         }
+
         return result;
     };
 

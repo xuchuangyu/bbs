@@ -10,7 +10,7 @@ const {
 } =require('../../validators/menu')
 const Router = require('koa-router')
 const router = new Router({
-    prefix: '/api/v1/authority.'
+    prefix: '/api/v1/authority'
 })
 // Authority 属于 Menu
 Authority.belongsTo(Menu)
@@ -20,5 +20,14 @@ router.post('/add',async (ctx)=>{
             name:v.get('body.name')
         })
     success()
+})
+router.get('/query',async (ctx)=>{
+    const data= await Authority.findAll({
+    attributes:['id','name'],
+    });
+    ctx.body={
+        code:200,
+        data
+    }
 })
 module.exports = router

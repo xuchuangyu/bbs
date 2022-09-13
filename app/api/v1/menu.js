@@ -27,7 +27,6 @@ router.post('/add',async (ctx)=>{
 })
 
 router.get('/query',async (ctx)=>{
-    console.log(ctx)
     const data=await Menu.findAll({
         where:{
 

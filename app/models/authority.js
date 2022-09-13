@@ -15,6 +15,9 @@ Authority.init({
         type:Sequelize.STRING,
         comment:"角色名称",
     },
+    menuId:{
+        type:Sequelize.INTEGER,
+    },
 },{
     sequelize,
     tableName:'authority',

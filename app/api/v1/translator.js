@@ -51,7 +51,7 @@ router.post('/', async (ctx) => {
         }
         let resultStr=[];
         for(let item of arr){
-            resultStr.push(await bdTranslate(item, { from:from || "zh", to: to ||'pt' }));
+            resultStr.push(await bdTranslate(item, { from:from || "auto", to: to ||'pt' }));
         }
         for(let i=0;i<arr.length;i++){
             for(let j=0;j<arr[i].length;j++){
@@ -60,7 +60,7 @@ router.post('/', async (ctx) => {
         }
     }else{
         // 数组处理
-        translator = await bdTranslate(translator, { from:from || "zh", to: to||'pt' })
+        translator = await bdTranslate(translator, { from:from || "auto", to: to||'pt' })
     }
 
     ctx.body = {

@@ -59,20 +59,20 @@ router.post('/', async (ctx) => {
                 translator[keyArr[i][j]]=resultStr[i][j].dst
             }
         }
-    }else{
+    }else if(typeof translator=='object'&&Array.isArray(translator) ){
         // 数组处理
-
         for(let item of translator){
             arr.push(await bdTranslate(item, { from:from || "auto", to: to||'pt' }))
         }
-
-        // translator = await bdTranslate(translator, { from:from || "auto", to: to||'pt' })
+        translator=arr;
+    }else{
+        translator = await bdTranslate(translator, { from:from || "auto", to: to||'pt' })
     }
 
     ctx.body = {
         code:200,
         msg:'操作成功',
-        data:arr,
+        data:translator,
     }
 })
 // async function translateString(str) {

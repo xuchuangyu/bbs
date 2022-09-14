@@ -7,16 +7,30 @@ class Authority extends Model{
 
 Authority.init({
     id:{
-        type:Sequelize.INTEGER,
+        type:DataTypes.INTEGER,
         primaryKey:true,
         autoIncrement:true
     },
     name:{
-        type:Sequelize.STRING,
+        type:DataTypes.STRING,
         comment:"角色名称",
     },
+    code:{
+        type:DataTypes.STRING,
+        comment:'角色标识'
+    },
+    type:{
+        type:DataTypes.INTEGER,
+        comment:'角色类型（1=内置|2 = 自定义）'
+    },
     menuId:{
-        type:Sequelize.INTEGER,
+        type:DataTypes.INTEGER,
+        comment:'关联菜单id',
+    },
+    status:{
+        type:DataTypes.INTEGER,
+        comment:'角色状态（1=启用|0=关闭）',
+        defaultValue:0
     },
 },{
     sequelize,

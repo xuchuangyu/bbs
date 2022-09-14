@@ -29,6 +29,7 @@ const router = new Router({
  * */
 router.post('/', async (ctx) => {
     let {translator,from,to}=JSON.parse(ctx.request.rawBody);
+    let arr=[];
     // let resultStr = await translator.translate(translatorObject[key])
     // translatorObject[key]=JSON.parse(resultStr).translation[0]；
     if(typeof translator=='object'&&!Array.isArray(translator) ){
@@ -60,13 +61,18 @@ router.post('/', async (ctx) => {
         }
     }else{
         // 数组处理
-        translator = await bdTranslate(translator, { from:from || "auto", to: to||'pt' })
+
+        for(let item of translator){
+            arr.push(await bdTranslate(item, { from:from || "auto", to: to||'pt' }))
+        }
+
+        // translator = await bdTranslate(translator, { from:from || "auto", to: to||'pt' })
     }
 
     ctx.body = {
         code:200,
         msg:'操作成功',
-        data:translator,
+        data:arr,
     }
 })
 // async function translateString(str) {

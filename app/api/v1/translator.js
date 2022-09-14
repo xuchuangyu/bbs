@@ -62,7 +62,10 @@ router.post('/', async (ctx) => {
     }else if(typeof translator=='object'&&Array.isArray(translator) ){
         // 数组处理
         for(let item of translator){
-            arr.push(await bdTranslate(item.replace(/\n/g,'').trim(), { from:from || "auto", to: to||'pt' }))
+            arr.push(await bdTranslate(item.replace(/\n/g,'~~~~~'), { from:from || "auto", to: to||'pt' }))
+        }
+        for(let item of translator){
+            item=item.replace(/~~~~~/g,'\n');
         }
         translator=arr;
     }else{

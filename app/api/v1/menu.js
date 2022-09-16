@@ -17,6 +17,15 @@ const router = new Router({
 })
 router.post('/add',async (ctx)=>{
     const v=await new addMenuValidator().validate(ctx);
+    const data=  Menu.findOne({
+        where:{
+            path:v.get('body.path'),
+            name:v.get('body.name')
+        }
+    })
+    if(data){
+        throw new global.errs.AuthFailed('菜单已存在')
+    }
     Menu.create({
         path:v.get('body.path'),
         name:v.get('body.name'),
@@ -26,16 +35,35 @@ router.post('/add',async (ctx)=>{
     success();
 })
 
-router.get('/query',async (ctx)=>{
+router.get('/findAll',async (ctx)=>{
     const data=await Menu.findAll({
-        where:{
-
+        attributes:{
+            exclude:['updated_at','deleted_at','created_at']
         },
-        attributes:['id','path','name','title','icon','rank'],
     })
     ctx.body={
         code:200,
         data
     }
 })
+
+router.get('/treeList',async(ctx)=>{
+    const data=await findMenu(-1)
+    ctx.body={
+        code:200,
+        data:data
+    }
+})
+async function findMenu(pid){
+    const data=await Menu.findAll({where:{pid},attributes:{exclude:['updated_at','deleted_at','created_at']}},)
+    if(data.length>0){
+        for(let item of data){
+            let childData=await findMenu(item.id);
+            if(childData.length>0){
+                item.dataValues.children=childData
+            }
+        }
+    }
+    return  data
+}
 module.exports = router

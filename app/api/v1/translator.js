@@ -1,4 +1,5 @@
 const {Translator,MysKeyTranslate} = require('../../models/translator');
+const googleTranslate =require('google-translate-open-api') ;
 let translator = new Translator();
 const {
     ConnentValidator,
@@ -76,6 +77,20 @@ router.post('/', async (ctx) => {
         code:200,
         msg:'操作成功',
         data:translator,
+    }
+})
+router.post('/google', async (ctx) => {
+
+
+    const result = await googleTranslate.default(`I'm fine.`, {
+        tld: "cn",
+        to: "zh-CN",
+    });
+    const data = result.data[0];
+    ctx.body = {
+        code:200,
+        msg:'操作成功',
+        data:data,
     }
 })
 // async function translateString(str) {

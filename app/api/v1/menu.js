@@ -23,7 +23,8 @@ router.post('/add',async (ctx)=>{
             name:v.get('body.name')
         }
     })
-    if(data){
+    console.log(data.id)
+    if(data.id){
         throw new global.errs.AuthFailed('菜单已存在')
     }
     Menu.create({

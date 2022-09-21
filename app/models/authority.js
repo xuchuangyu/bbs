@@ -23,10 +23,6 @@ Authority.init({
         type:DataTypes.INTEGER,
         comment:'角色类型（1=内置|2 = 自定义）'
     },
-    menuId:{
-        type:DataTypes.INTEGER,
-        comment:'关联菜单id',
-    },
     status:{
         type:DataTypes.INTEGER,
         comment:'角色状态（1=启用|0=关闭）',

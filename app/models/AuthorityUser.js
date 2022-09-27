@@ -1,11 +1,11 @@
 const { sequelize } = require('../../core/db');
 const { Model,DataTypes } = require('sequelize');
 const { Authority } = require('./authority')
-const { Menu } = require('./menu')
-class AuthorityMenu extends Model{
+const { User } = require('./user')
+class AuthorityUser extends Model{
 
 }
-AuthorityMenu.init({
+AuthorityUser.init({
     AuthorityId:{
         type:DataTypes.INTEGER,
         references:{
@@ -13,20 +13,20 @@ AuthorityMenu.init({
             key:'id'
         },
     },
-    MenuId:{
+    UserId:{
         type:DataTypes.INTEGER,
         references:{
-            model:Menu,
+            model:User,
             key:'id'
         },
     },
 },{
     sequelize,
-    tableName:'AuthorityMenu'
+    tableName:'AuthorityUser'
 })
 
 
 
 module.exports={
-    AuthorityMenu
+    AuthorityUser
 }

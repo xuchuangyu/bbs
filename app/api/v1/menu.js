@@ -7,23 +7,22 @@ const {
 const {success} = require('../../lib/helper')
 const {
     addMenuValidator,
+    editMenuValidator,
 } =require('../../validators/menu')
 const Router = require('koa-router')
-// 关联 Authority
-Menu.hasMany(Authority);
+
 
 const router = new Router({
     prefix: '/api/v1/menu'
 })
 router.post('/add',async (ctx)=>{
     const v=await new addMenuValidator().validate(ctx);
-    const data=  Menu.findOne({
+    const data= await Menu.findOne({
         where:{
             path:v.get('body.path'),
             name:v.get('body.name')
         }
     })
-    console.log(data.id)
     if(data.id){
         throw new global.errs.AuthFailed('菜单已存在')
     }
@@ -35,7 +34,28 @@ router.post('/add',async (ctx)=>{
     })
     success();
 })
-
+router.put('/edit',async (ctx)=>{
+    const v=await new editMenuValidator().validate(ctx);
+    const data=await  Menu.findOne({
+        where:{
+            id:v.get('body.id'),
+        }
+    })
+    if(!data.id){
+        throw new global.errs.AuthFailed('菜单不存在')
+    }
+    Menu.update({
+        path:v.get('body.path'),
+        name:v.get('body.name'),
+        title:v.get('body.title'),
+        pid:v.get('body.pid')||-1,
+    },{
+        where:{
+            id:v.get('body.id'),
+        }
+    })
+    success();
+})
 router.get('/findAll',async (ctx)=>{
     const data=await Menu.findAll({
         attributes:{
@@ -49,22 +69,18 @@ router.get('/findAll',async (ctx)=>{
 })
 
 router.get('/treeList',async(ctx)=>{
-    const data=await findMenu(-1)
+    const data=await Menu.findMenu({pid:-1})
     ctx.body={
         code:200,
         data:data
     }
 })
-async function findMenu(pid){
-    const data=await Menu.findAll({where:{pid},attributes:{exclude:['updated_at','deleted_at','created_at']}},)
-    if(data.length>0){
-        for(let item of data){
-            let childData=await findMenu(item.id);
-            if(childData.length>0){
-                item.dataValues.children=childData
-            }
-        }
+router.get('/treeList/:id',async(ctx)=>{
+    const {id}=ctx.params;
+    const data=await Menu.findMenu({pid:-1,aid:id})
+    ctx.body={
+        code:200,
+        data:data
     }
-    return  data
-}
+})
 module.exports = router

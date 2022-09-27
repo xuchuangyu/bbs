@@ -11,6 +11,14 @@ class addMenuValidator extends LinValidator {
         ]
     }
 }
+class editMenuValidator extends addMenuValidator{
+    constructor() {
+        super();
+        this.id=[
+            new Rule('isLength','id不能为空',{min:1})
+        ]
+    }
+}
 class addAuthorityValidator extends LinValidator {
     constructor() {
         super();
@@ -35,6 +43,7 @@ class editAuthorityValidator extends LinValidator {
 }
 module.exports={
     addMenuValidator,
+    editMenuValidator,
     addAuthorityValidator,
     editAuthorityValidator
 }

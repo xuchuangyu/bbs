@@ -1,8 +1,31 @@
 const { sequelize } = require('../../core/db');
 const {  Sequelize,Model,DataTypes  } = require('sequelize');
-const { Authority } = require('./authority')
+
 class Menu extends Model{
 
+    /**
+     * obj:{pid:(父级id),aid:(角色id)}
+     * */
+    static async findMenu(obj){
+        const { Authority } = require('./authority')
+        let pid=obj.pid||-1;
+        let aid=obj.aid;
+        const data=await Menu.findAll({where:{pid},attributes:{exclude:['updated_at','deleted_at','created_at']}},)
+        if(data.length>0){
+            for(let item of data){
+                const { id }=item.dataValues;
+                if(aid){
+                    let aData =  await  Authority.findOne({where:{id:aid}});
+                    item.dataValues.checked=await aData.hasMenu(item);
+                }
+                let childData=await this.findMenu({pid:id,aid:obj.aid});
+                if(childData.length>0){
+                    item.dataValues.children=childData
+                }
+            }
+        }
+        return  data
+    }
 }
 
 Menu.init({

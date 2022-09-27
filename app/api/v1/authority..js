@@ -14,8 +14,6 @@ const Router = require('koa-router')
 const router = new Router({
     prefix: '/api/v1/authority'
 })
-// Authority 属于 Menu
-Authority.belongsTo(Menu)
 router.post('/add',async (ctx)=>{
     const v=await new  addAuthorityValidator().validate(ctx)
         Authority.create({
@@ -57,18 +55,28 @@ router.get('/menu/:id',async (ctx)=>{
         },
         include:[{
             model:Menu,
-            attributes:['name','title'],
+            through:{attributes:[]}
         }],
-
     })
+    const AuthorityData=await Authority.findOne({
+        where:{id}
+    })
+    const MenuData=await Menu.findAll()
+   await MenuData.map(async item=>{
+        const flay=await AuthorityData.hasMenu(item);
+        item.checked=flay;
+        return item;
+    })
+
     ctx.body={
         code:200,
-        data
+        data,
+        MenuData
     }
 })
+// 根据角色aid 获取 角色菜单
 router.post('/menu',async (ctx)=>{
     const {ids,aid}=ctx.request.body;
-    console.log(ids)
     const MenuModel=await Menu.findAll({where:{
             id:ids
         }});
@@ -77,9 +85,9 @@ router.post('/menu',async (ctx)=>{
             id:aid
         }
     })
-    console.log(MenuModel);
-    console.log(AuthorityModel)
-    AuthorityModel.setMenus(MenuModel)
+    AuthorityModel.addMenus(MenuModel);
+
+
     ctx.body={
         code:200,
     }

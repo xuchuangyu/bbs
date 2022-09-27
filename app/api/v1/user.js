@@ -4,7 +4,7 @@ const Router = require('koa-router')
 
 const {success} = require('../../lib/helper')
 const {getCurDate} = require('../../../core/util')
-
+const { Authority } = require('../../models/authority')
 const {
     MobileRegisterValidator,
     RegisterValidator
@@ -12,7 +12,8 @@ const {
 const {
     User
 } = require('../../models/user')
-const {MobilePhoneModel} = require('../../models/MobilePhoneModel')
+const {MobilePhoneModel} = require('../../models/MobilePhoneModel');
+
 const router = new Router({
     prefix: '/api/v1/user'
 })
@@ -84,6 +85,47 @@ router.post('/sendSMSCode',async (ctx)=>{
         ctx.body = smsCodeData;
     }catch (error){
         console.log(error)
+    }
+})
+
+router.get('/list',async(ctx)=>{
+    const { pageSize,pageNumber } = ctx.request.body;
+    const data= await  User.findAndCountAll({
+        attributes:{
+            exclude:['deleted_at','updated_at','created_at'],
+        },
+        offset:pageNumber||0,
+        limit:pageSize||10
+    })
+    ctx.body={
+        code:200,
+        data
+    }
+})
+router.post('/authority',async (ctx)=>{
+    const {uid,aids} = ctx.request.body;
+    const uData=await  User.findOne({where:{id:uid}});
+    const aData=await  Authority.findAll({where:{id:aids}})
+    // uData.addAuthoritys(aData)
+    console.log(uData);
+    console.log(aData);
+    ctx.body={
+        code:200,
+        uData,
+        aData
+    }
+    // success()
+})
+router.get('/authority/:id',async(ctx)=>{
+    const {id}=ctx.params;
+    const data=await User.findOne({where:{id},
+        include: [{
+            model: Authority,
+            through: { attributes: [] }
+        }]})
+    ctx.body={
+        code:200,
+        data:data.Authorities
     }
 })
 module.exports = router

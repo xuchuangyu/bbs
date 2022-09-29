@@ -4,7 +4,8 @@ const Router = require('koa-router')
 
 const {success} = require('../../lib/helper')
 const {getCurDate} = require('../../../core/util')
-const { Authority } = require('../../models/authority')
+const { Authority } = require('../../models/authority');
+const {AuthorityUser} = require('../../models/AuthorityUser')
 const {
     MobileRegisterValidator,
     RegisterValidator
@@ -106,26 +107,26 @@ router.post('/authority',async (ctx)=>{
     const {uid,aids} = ctx.request.body;
     const uData=await  User.findOne({where:{id:uid}});
     const aData=await  Authority.findAll({where:{id:aids}})
-    // uData.addAuthoritys(aData)
-    console.log(uData);
-    console.log(aData);
-    ctx.body={
-        code:200,
-        uData,
-        aData
-    }
-    // success()
+    await AuthorityUser.destroy({
+        where:{
+            'user_id':uid,
+        },
+        force:true
+    })
+    await uData.setAuthorities(aData)
+    success()
 })
 router.get('/authority/:id',async(ctx)=>{
     const {id}=ctx.params;
-    const data=await User.findOne({where:{id},
-        include: [{
-            model: Authority,
-            through: { attributes: [] }
-        }]})
+    const data=await User.findOne({where:{id}});
+    const authorities=await data.getAuthorities()
+    const ids=[];
+    for(let item of authorities){
+        ids.push(item.id)
+    }
     ctx.body={
         code:200,
-        data:data.Authorities
+        data:ids
     }
 })
 module.exports = router

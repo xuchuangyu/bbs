@@ -72,7 +72,7 @@ Article.init({
     },
     //内容
     content: {
-        type: Sequelize.TEXT('tiny'),
+        type: Sequelize.TEXT('longtiny'),
         allowNull: false,
         field: 'content'
     },

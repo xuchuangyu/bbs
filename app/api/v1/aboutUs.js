@@ -26,4 +26,6 @@ router.post('/create', async (ctx) => {
      await AboutUs.create(aboutUs)
      success()
 })
+
+
 module.exports = router

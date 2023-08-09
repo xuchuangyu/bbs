@@ -6,11 +6,18 @@ class addMenuValidator extends LinValidator {
         this.name=[
             new Rule('isLength','name不能为空',{ min : 1 })
         ]
-        this.path=[
-            new Rule('isLength','path不能为空',{min:1})
+
+    }
+}
+class editMenuValadator extends LinValidator {
+    constructor() {
+        super();
+        this.name=[
+            new Rule('isLength','name不能为空',{ min : 1 })
         ]
     }
 }
 module.exports = {
-    addMenuValidator
+    addMenuValidator,
+    editMenuValadator
 }

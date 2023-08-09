@@ -15,7 +15,6 @@ router.get('/captcha', async (ctx, next) => {
       });
       ctx.session.captcha=captcha.text;
       ctx.response.type = 'image/svg+xml';
-    console.log(captcha.text)
       ctx.body = captcha.data;
 })
 // 获取随机验证码背景颜色

@@ -1,7 +1,6 @@
 
 
 const Router = require('koa-router')
-
 const {success} = require('../../lib/helper')
 const {getCurDate} = require('../../../core/util')
 const { Authority } = require('../../models/authority');
@@ -115,6 +114,28 @@ router.post('/authority',async (ctx)=>{
     })
     await uData.setAuthorities(aData)
     success()
+})
+router.post('/findPwd',async (ctx)=>{
+    const {mobile,verifyCode,password,repeatPassword} = ctx.request.body;
+    if(verifyCode!=ctx.session.smsCode){
+        throw new Error('短信验证码不正确')
+    }
+    const data = User.findOne({where:{
+            mobile
+     },
+     raw:true})
+    if(Boolean(data)){
+        await User.update({
+            password:password
+        },{
+            where:{
+                mobile
+            }
+        })
+        success()
+    }else{
+
+    }
 })
 router.get('/authority/:id',async(ctx)=>{
     const {id}=ctx.params;

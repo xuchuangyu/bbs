@@ -27,17 +27,9 @@ Menus.init({
         primaryKey:true,
         autoIncrement:true
     },
-    perms:{
-        type:DataTypes.VIRTUAL,
-        async get(){
-            const { Permissions } = require('./permissions')
-            const {id} = this.dataValues
-            const data=await Permissions.findAll({where:{
-                    menuId:id
-                }})
-            console.log(data)
-            return data
-        }
+    perm:{
+        type:DataTypes.STRING,
+        comment:'权限标识',
     },
     icon:{
         type:DataTypes.STRING,
@@ -67,7 +59,7 @@ Menus.init({
     },
     type:{
         type:DataTypes.STRING,
-        comment:"菜单类型（菜单=CATALOG|目录=MENU|外链=EXTLINK）",
+        comment:"菜单类型（菜单=CATALOG|目录=MENU|外链=EXTLINK|BUTTON）",
     },
     visible:{
         type:DataTypes.INTEGER,

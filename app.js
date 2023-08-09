@@ -10,12 +10,14 @@ const koaStatic = require('koa-static')
 const catchError = require('./middlewares/exception')
 const session = require('koa-session');
 const cors = require('koa-cors');
+// const { koaBody } = require('koa-body');
 
 const app = new Koa()
 onerror(app)
 const CONFIG = {
   key: 'koa:sess',
-  maxAge: 86400000, //失效时间，默认是一天。
+  // maxAge: 86400000, //失效时间，默认是一天。
+  maxAge: 1000, //失效时间，默认是一天。
       overwrite: true,
       httpOnly: true, //表示是否可以通过javascript来修改，设成true会更加安全
       signed: true, //这个涉及到cookie的安全性
@@ -32,7 +34,9 @@ app.use(bodyparser({
 }))
 app.use(json())
 app.use(koaStatic(path.join(__dirname,'./public')))
-
+// app.use(koaBody({
+//     multipart: true,
+// }));
 InitManager.initCore(app)
 
 app.on('error', (err, ctx) => {

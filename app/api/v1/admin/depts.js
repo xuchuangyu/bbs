@@ -8,6 +8,8 @@ const router = new Router({
     prefix: '/api/v1/admin/depts'
 })
 
+
+
 router.post('/add',async(ctx)=>{
     const v=await new addDeptsValidator().validate(ctx)
     Depts.create({

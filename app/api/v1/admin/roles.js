@@ -23,7 +23,6 @@ router.get('/options',async (ctx)=>{
         attributes:[['id','value'],['name','label']],
         raw:true,
     })
-    console.log(data)
     ctx.body={
         code:200,
         data
@@ -32,7 +31,7 @@ router.get('/options',async (ctx)=>{
 router.get('/:id',async (ctx)=>{
     const { id } = ctx.params;
     const data=await Roles.findOne({
-        attributes:['id','name','code','status','sort'],
+        attributes:['id','name','code','status','sort','dataScope'],
         where:{
             id
         }

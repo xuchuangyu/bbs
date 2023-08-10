@@ -59,6 +59,11 @@ router.get('/routes',new Auth().m,async (ctx)=>{
     let roles=UdataRoles.map(item=>{
         return item.code
     })
+    let menusIds=[];
+    for(let item of UdataRoles){
+        menusIds.push(...item.menusIds.split(','))
+    }
+    query['id']=Array.from(new Set(menusIds))
     let data=await Menus.findRouteMenus(roles,query)
     ctx.body={
         code:200,

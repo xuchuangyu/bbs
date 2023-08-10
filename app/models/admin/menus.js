@@ -23,14 +23,14 @@ class Menus extends Model{
     static async findRouteMenus(roles,params,attributes){
         // let pid=obj.pid||-1;
         let obj=[]
-        const data=await Menus.findAll({where:{...params},raw:true})
+        const data=await Menus.findAll({where:{...params, visible:1,
+            },raw:true})
         if(data.length>0){
             for(let item of data){
                 const { component,path,icon,name , id } = item
                 let childData=await this.findRouteMenus(roles,{
                     ...params,
                     parentId:id,
-
                 });
                 obj.push(
                      {
@@ -48,7 +48,6 @@ class Menus extends Model{
                 )
 
             }
-            console.log(obj)
         }
         return obj;
     }
@@ -83,7 +82,7 @@ Menus.init({
     component:{
         type:DataTypes.STRING,
         comment:"组件路径",
-        defaultValue:'Layout',
+        defaultValue:'',
     },
     sort:{
         type:DataTypes.INTEGER,

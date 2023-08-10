@@ -1,8 +1,14 @@
 // 菜单服务
 const {Op} = require('sequelize')
 const { Menus } = require('../../../models/admin/menus')
+const { Roles } = require('../../../models/admin/roles')
+const { AdminUser } = require('../../../models/admin/user')
 const {success} = require('../../../lib/helper')
 const { addMenuValidator ,editMenuValadator} = require('../../../validators/admin/menus')
+const {
+    Auth
+} = require('../../../../middlewares/auth')
+
 const Router = require('koa-router')
 const router = new Router({
     prefix: '/api/v1/admin/menus'
@@ -41,6 +47,25 @@ router.get('/options',async (ctx)=>{
         msg:'一切正常'
     }
 })
+router.get('/routes',new Auth().m,async (ctx)=>{
+    const { uid } = ctx.auth;
+    const query={parentId:0,type:{[Op.ne]:'BUTTON'}};
+    const Udata = await AdminUser.findOne({
+        where:{
+            id:uid
+        }
+    })
+   const UdataRoles=await Udata.getRoles({raw:true});
+    let roles=UdataRoles.map(item=>{
+        return item.code
+    })
+    let data=await Menus.findRouteMenus(roles,query)
+    ctx.body={
+        code:200,
+        data,
+        msg:'一切ok'
+    }
+})
 router.get('/:id',async (ctx)=>{
     // 获取菜单详情
     const { id } = ctx.params;
@@ -72,6 +97,9 @@ router.post('/',async(ctx)=>{
     })
     success();
 })
+
+
+
 
 router.put('/:id',async (ctx)=>{
     const { id }  = ctx.params;

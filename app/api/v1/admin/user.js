@@ -5,9 +5,13 @@ const xlsx = require('xlsx');
 const { Depts } = require('../../../models/admin/depts')
 const { Roles } = require('../../../models/admin/roles')
 const { AdminUser } =  require('../../../models/admin/user')
+const { Menus } =  require('../../../models/admin/menus')
 const { addUser,editUser,importUser } = require('../../../validators/admin/user')
 const { koaBody } = require('koa-body');
 const {success} = require('../../../lib/helper')
+const {
+    Auth
+} = require('../../../../middlewares/auth')
 
 AdminUser.belongsTo(Depts,{foreignKey:'deptId'})
 
@@ -21,6 +25,9 @@ router.get('/pages',async (ctx)=>{
     const data=await AdminUser.findAndCountAll({
         offset:parseInt(pageSize)*(parseInt(pageNum)-1),
         limit:parseInt(pageSize)||10,
+        attributes:{
+            exclude:['password'],
+        },
     })
     const {rows,count} =data;
     for(let item of rows){
@@ -43,6 +50,8 @@ router.get('/pages',async (ctx)=>{
 
 router.post('/',async (ctx)=>{
     const v= await  new addUser().validate(ctx)
+     // await  new addUser().validateUsername(ctx)
+     // await  new addUser().validateMobile(ctx)
     const DeptModel = await Depts.findOne({
         where:{id:v.get('body.deptId')}
     })
@@ -59,6 +68,7 @@ router.post('/',async (ctx)=>{
         gender:v.get('body.gender'),
         email:v.get('body.email'),
         status:v.get('body.status'),
+        password:'123456',
     })
    await data.setDept(DeptModel);
    await data.setRoles(RolesModel);
@@ -132,6 +142,7 @@ router.post('/_import', koaBody({ multipart: true }), async (ctx)=>{
                 mobile:row['手机号码'],
                 gender:row['性别']=='男'?1:row['性别']=='男'?2:3,
                 email:row['邮箱'],
+                password:'123456',
                 status:1,
             })
             await data.setDept(DeptModel);
@@ -152,12 +163,78 @@ router.post('/_import', koaBody({ multipart: true }), async (ctx)=>{
 
 })
 
+router.delete('/:ids/byId',async (ctx)=>{
+    const { ids } = ctx.params
+    const data= await AdminUser.findAll({
+        where:{
+            id:ids
+        }
+    })
+    if(data){
+        // data.de
+        for(let item of data){
+            if(item.hasRoles){
+               await item.removeRoles()
+            }
+        }
+       await AdminUser.destroy({
+            where:{
+                id:ids
+            }
+        })
+    }
+    success()
+})
+
+router.get('/me',new Auth().m,async (ctx)=>{
+    const { uid } = ctx.auth
+    const UData=await AdminUser.findOne({
+        where:{
+            id:uid
+        }
+    })
+    const Roles=await UData.getRoles({raw:true});
+    const { id,nickname } = UData.dataValues;
+        const menusIds=[];
+        for(let item of Roles){
+            menusIds.push(...item.menusIds.split(','))
+        }
+        let  MenusData=[]
+        if(menusIds){
+             MenusData=await Menus.findAll({
+                where:{
+                    id:menusIds,
+                    type:'BUTTON'
+                },
+               raw:true
+            })
+        }
+   ctx.body={
+       code:200,
+       data:{
+           avatar: "https://oss.youlai.tech/youlai-boot/2023/05/16/811270ef31f548af9cffc026dfc3777b.gif",
+           nickname:nickname,
+           perms:MenusData.map(item=>{
+               return item.perm;
+           }),
+           roles: Roles.map(item=>{
+               return item.code
+           }),
+           userId:id,
+        },
+       msg:'一切ok'
+   }
+})
+
 router.get('/:id/form',async (ctx)=>{
     const { id } = ctx.params
    const data= await AdminUser.findOne({
         where:{
             id
-        }
+        },
+       attributes:{
+            exclude:['password']
+       },
     })
     const RDate=await data.getRoles();
     data.dataValues.roleIds= RDate.map(item=>{

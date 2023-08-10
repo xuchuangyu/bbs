@@ -20,6 +20,38 @@ class Menus extends Model{
         }
         return data;
     }
+    static async findRouteMenus(roles,params,attributes){
+        // let pid=obj.pid||-1;
+        let obj=[]
+        const data=await Menus.findAll({where:{...params},raw:true})
+        if(data.length>0){
+            for(let item of data){
+                const { component,path,icon,name , id } = item
+                let childData=await this.findRouteMenus(roles,{
+                    ...params,
+                    parentId:id,
+
+                });
+                obj.push(
+                     {
+                        component,
+                        path,
+                        children:childData,
+                        meta:{
+                            hidden:false,
+                            keepAlive:true,
+                            icon,
+                            roles,
+                            title:name,
+                        },
+                    }
+                )
+
+            }
+            console.log(obj)
+        }
+        return obj;
+    }
 }
 Menus.init({
     id:{

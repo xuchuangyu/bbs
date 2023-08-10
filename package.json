@@ -19,6 +19,7 @@
     "debug": "^4.1.1",
     "google-translate-api": "^2.3.0",
     "google-translate-open-api": "^1.3.7",
+    "js-base64": "^3.7.5",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.7.0",
     "koa-body": "^6.0.1",

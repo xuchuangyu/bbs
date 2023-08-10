@@ -1,4 +1,5 @@
 const { Model,DataTypes ,Deferrable } = require('sequelize')
+const bcrypt = require('bcryptjs')
 const {Depts} = require('./depts')
 const {  sequelize } =  require('../../../core/db')
 
@@ -30,6 +31,15 @@ AdminUser.init({
         type:DataTypes.STRING,
         defaultValue:'',
         comment:'手机号码',
+    },
+    password:{
+        type: DataTypes.STRING,
+        comment:'密码',
+        set(val) {
+            const salt = bcrypt.genSaltSync(10)
+            const psw = bcrypt.hashSync(val, salt)
+            this.setDataValue('password', psw)
+        }
     },
     nickname:{
         type:DataTypes.STRING,

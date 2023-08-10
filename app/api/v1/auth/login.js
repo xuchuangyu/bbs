@@ -1,8 +1,8 @@
 const Router=require('koa-router');
+const { Base64 } = require('js-base64')
 const {postAuthLogin} =require('../../../validators/auth/login')
-const {
-    User
-} = require(`../../../models/user`)
+const { AdminUser }= require(`../../../models/admin/user`)
+const bcrypt = require('bcryptjs')
 const { generateToken } = require('../../../../core/util')
 const { Auth } = require('../../../../middlewares/auth')
 const router=Router({
@@ -10,27 +10,27 @@ const router=Router({
 })
 
 router.post('/',async (ctx)=>{
-    const {username,password,uuid,code} =ctx.query;
     const v=await new postAuthLogin().validate(ctx);
-    const token=accountLogin(ctx)
+    const token=await accountLogin(ctx)
     ctx.body={
         code:200,
         data:{
-            accessToken:token,
+            access_token:Base64.encode(token+':'),
             refreshToken:null,
             expires:null,
-            tokenType:'"Bearer"',
+            token_type:'Basic',
         },
     }
 })
 async function verifyAccountPassword(ctx){
     const { username,password,code,uuid }=ctx.query;
-    const user = await User.findOne({
+    const user = await AdminUser.findOne({
         where: {
-            account:username,
-        }
+            username:username,
+        },
+        raw:true
     })
-    if(ctx.session[uuid]){
+    if(!ctx.session[uuid]){
         throw new global.errs.AuthFailed('验证码已过期')
     }
     if(code!=ctx.session[uuid]){
@@ -47,8 +47,8 @@ async function verifyAccountPassword(ctx){
 }
 // 账号密码登录
 async function accountLogin(ctx){
-    const {account} = ctx.request.body;
+    const {username} = ctx.request.body;
     const user =  await verifyAccountPassword(ctx)
-    return generateToken(user.id,account=='admin'?Auth.ADMIN:Auth.USER)
+    return generateToken(user.id,username=='admin'?Auth.ADMIN:Auth.USER)
 }
 module.exports = router;

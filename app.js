@@ -17,7 +17,7 @@ onerror(app)
 const CONFIG = {
   key: 'koa:sess',
   // maxAge: 86400000, //失效时间，默认是一天。
-  maxAge: 1000, //失效时间，默认是一天。
+  maxAge: 360000, //失效时间，默认是一天。
       overwrite: true,
       httpOnly: true, //表示是否可以通过javascript来修改，设成true会更加安全
       signed: true, //这个涉及到cookie的安全性

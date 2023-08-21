@@ -29,7 +29,7 @@ class Auth {
             }
             ctx.auth = {
                 uid:decode.uid,
-                scope:decode.scope
+                scope:decode.scope,
             }
             await next()
         }

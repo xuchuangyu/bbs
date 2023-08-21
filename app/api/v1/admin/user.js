@@ -1,5 +1,6 @@
 
 const Router= require('koa-router')
+const {Op} = require('sequelize')
 const send = require('koa-send');
 const xlsx = require('xlsx');
 const { Depts } = require('../../../models/admin/depts')
@@ -21,10 +22,14 @@ const router=Router({
 })
 
 router.get('/pages',async (ctx)=>{
-    const { pageNum,pageSize } = ctx.query;
+    const { pageNum,pageSize,deptId } = ctx.query;
+
     const data=await AdminUser.findAndCountAll({
         offset:parseInt(pageSize)*(parseInt(pageNum)-1),
         limit:parseInt(pageSize)||10,
+        where:{
+            deptId:deptId||{[Op.like]:'%'},
+        },
         attributes:{
             exclude:['password'],
         },
@@ -47,6 +52,16 @@ router.get('/pages',async (ctx)=>{
         },
     }
 })
+
+router.get('/findAll',async(ctx)=>{
+    const data=await  AdminUser.findAll({attributes:{include:['id','nickName'],},raw:true})
+    ctx.body={
+        code:200,
+        data,
+        msg:'一切ok'
+    }
+})
+
 
 router.post('/',async (ctx)=>{
     const v= await  new addUser().validate(ctx)

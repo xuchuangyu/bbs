@@ -32,6 +32,10 @@ AdminUser.init({
         defaultValue:'',
         comment:'手机号码',
     },
+    deptId:{
+        type:DataTypes.INTEGER,
+        comment:'部门关联id',
+    },
     password:{
         type: DataTypes.STRING,
         comment:'密码',

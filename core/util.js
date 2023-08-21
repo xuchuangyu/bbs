@@ -45,7 +45,8 @@ const generateToken = function (uid, scope) {
     const expiresIn = global.config.security.expiresIn
     const token = jwt.sign({
         uid,
-        scope
+        scope,
+        time:new Date().getTime(),
     }, secretKey, {
         expiresIn: expiresIn
     })

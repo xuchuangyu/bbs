@@ -28,7 +28,6 @@ async function verifyAccountPassword(ctx){
         where: {
             username:username,
         },
-        raw:true
     })
     if(!ctx.session[uuid]){
         throw new global.errs.AuthFailed('验证码已过期')
@@ -39,9 +38,13 @@ async function verifyAccountPassword(ctx){
     if(!user){
         throw new global.errs.AuthFailed('账户不存在')
     }
-    const correct = bcrypt.compareSync(password,user.password);
+    const correct = bcrypt.compareSync(password,user.dataValues.password);
     if(!correct) {
         throw new global.errs.AuthFailed('密码不正确')
+    }
+    const Ddata=user.getDept({raw:true})
+    if(Ddata.status===0){
+        throw new global.errs.AuthFailed('部门已经被禁用了');
     }
     return user
 }

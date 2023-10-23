@@ -3,6 +3,8 @@ const moment = require('moment')
 const { Schedule  } = require('../../../models/admin/schedule')
 const { ScheduleItem } = require('../../../models/admin/scheduleItem')
 const { addScheduleValidator } = require('../../../validators/admin/schedule')
+const { AdminUser } =  require('../../../models/admin/user');
+
 const { success } = require('../../../lib/helper')
 
 Schedule.hasMany(ScheduleItem)
@@ -68,8 +70,12 @@ router.get('/record',async (ctx)=>{
         // 时间有问题、
 
     }
-  const ScheduleItems= await data.getScheduleItems()
+      const ScheduleItems= await data.getScheduleItems({
+          group:['adminUserId'],
+          rows:true
+      })
     const headerDates=[];
+    const rows=[]
     const after={
         headerDates:[],
         row:[],
@@ -79,34 +85,61 @@ router.get('/record',async (ctx)=>{
         row:[],
     }
     const dateStatistics=[];
-    const rows=[];
-    // data.get
     const week={1:'周一',2:'周二',3:'周三',4:'周四',5:'周五',6:'周六',7:'周日'}
-    for(let i=0;i<day;i++){
-        const ScheduleItemByDate= await data.getScheduleItems({
-            where:{
-                date:moment(startDate).add(i,'day')
-            },
-        })
-        if(moment(startDate).add(i+1,'day').isBefore(moment())){
-            before.headerDates.push({
-                date:moment(startDate).add(i,'day').format('YYYY-MM-DD'),
-                week: week[moment(startDate).add(i,'day').isoWeekday()]
-            })
-        }else{
-            after.headerDates.push({
-                date:moment(startDate).add(i,'day').format('YYYY-MM-DD'),
-                week: week[moment(startDate).add(i,'day').isoWeekday()]
+        // 没有班表记录
+
+        for(let i=0;i<day;i++){
+                if(moment(startDate).add(i+1,'day').isBefore(moment())){
+                    before.headerDates.push({
+                        date:moment(startDate).add(i,'day').format('YYYY-MM-DD'),
+                        week: week[moment(startDate).add(i,'day').isoWeekday()]
+                    })
+                }else{
+                    after.headerDates.push({
+                        date:moment(startDate).add(i,'day').format('YYYY-MM-DD'),
+                        week: week[moment(startDate).add(i,'day').isoWeekday()]
+                    })
+                }
+                dateStatistics.push({
+                    date:moment(startDate).add(i,'day').format('YYYY-MM-DD'),
+                    total:0
+                })
+        }
+
+        // for(let [j,item2] of ScheduleItems.entries()) {
+
+        headerDates.push(...after.headerDates,...before.headerDates)
+        if(after.row.length>0&&before.row.length>0){
+            rows.push({
+                positionId:'',
+                dateItems:[...after.row,...before.row]
             })
         }
-        dateStatistics.push({
-            date:moment(startDate).add(i,'day').format('YYYY-MM-DD'),
-            total:ScheduleItemByDate.length
-        })
-    }
-    headerDates.push(...after.headerDates,...before.headerDates)
 
-    console.log(day)
+
+        // data.get
+
+    // for(let i=0;i<day;i++){
+    //     const ScheduleItemByDate= await data.getScheduleItems({
+    //         rows:true
+    //     })
+    //
+    //     if(moment(startDate).add(i+1,'day').isBefore(moment())){
+    //         before.headerDates.push({
+    //             date:moment(startDate).add(i,'day').format('YYYY-MM-DD'),
+    //             week: week[moment(startDate).add(i,'day').isoWeekday()]
+    //         })
+    //     }else{
+    //         after.headerDates.push({
+    //             date:moment(startDate).add(i,'day').format('YYYY-MM-DD'),
+    //             week: week[moment(startDate).add(i,'day').isoWeekday()]
+    //         })
+    //     }
+    //     dateStatistics.push({
+    //         date:moment(startDate).add(i,'day').format('YYYY-MM-DD'),
+    //         total:ScheduleItemByDate.length
+    //     })
+    // }
     ctx.body={
         code:200,
         data:{
@@ -120,6 +153,22 @@ router.get('/record',async (ctx)=>{
         msg:'一切ok'
     }
 })
+router.post('/record',async (ctx)=>{
+    const {scheduleId,rows} = ctx.request.body;
+    const data= await Schedule.findOne({
+        where:{
+            id:scheduleId
+        },
+        attributes:{
+            exclude:['created_at','deleted_at','updated_at'],
+        }
+    })
+    for(let rowItem of rows){
+        const { positionId,dateItems } = rowItem
 
+        // if(positionId){}
+    }
+    success()
+})
 
 module.exports = router;

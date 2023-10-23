@@ -2,6 +2,7 @@
 // const {} =require('@validators')
 const Router = require('koa-router')
 const multer = require('koa-multer')
+
 const router = new Router({
     prefix: '/api/v1'
 })
@@ -32,10 +33,9 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
     if (!ctx.req.file) {
         throw new global.errs.uploadException
     }
-    ctx.body =[{
-        url: 'http://localhost:3000/uploads/' + ctx.req.file.filename,//返回文件名
-        thumb:'http://localhost:3000/uploads/' + ctx.req.file.filename,//返回文件名
-        tag: 'flower'
-    }]
+    ctx.body ={
+        code:200,
+        url:'http://127.0.0.1:8088/uploads/' + ctx.req.file.filename
+    }
 })
 module.exports = router
